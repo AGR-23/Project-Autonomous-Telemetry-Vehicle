@@ -1,0 +1,5 @@
+app/Main.class
+net/NetworkClient.class
+net/MessageParser.class
+ui/ObserverUI.class
+model/TelemetryModel.class
