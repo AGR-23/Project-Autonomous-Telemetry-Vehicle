@@ -140,13 +140,20 @@ static void apply_turn_left(int left){
 
 // ---------- Telemetry ----------
 static void broadcast_tlm(void){
-    char line[256]; time_t now=time(NULL);
+    char line[256];
+    time_t now=time(NULL);
+    struct tm tm;
+    localtime_r(&now, &tm);
+    char ts[32];
+    strftime(ts, sizeof(ts), "%Y-%m-%d %H:%M:%S", &tm);
     pthread_mutex_lock(&g_state_mx);
-    int sp=g_speed, bt=g_battery, tp=g_temp; const char* ds=dir_str(g_dir);
+    int sp=g_speed, bt=g_battery, tp=g_temp;
+    const char* ds=dir_str(g_dir);
     pthread_mutex_unlock(&g_state_mx);
-    snprintf(line,sizeof(line),"TLM speed=%d;battery=%d;temp=%d;dir=%s;ts=%ld\n", sp,bt,tp,ds,(long)now);
+    snprintf(line, sizeof(line), "TLM speed=%d;battery=%d;temp=%d;dir=%s;ts=%s\n", 
+             sp, bt, tp, ds, ts);    
     pthread_mutex_lock(&g_clients_mx);
-    for(client_t *c=g_clients;c;c=c->next) send(c->fd,line,strlen(line),0);
+    for(client_t *c=g_clients; c; c=c->next) send(c->fd, line, strlen(line), 0);
     pthread_mutex_unlock(&g_clients_mx);
 }
 static void *telemetry_thread(void *arg){
