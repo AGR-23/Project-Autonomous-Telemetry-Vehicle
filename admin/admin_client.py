@@ -10,7 +10,7 @@ class TelemetryInterface(ctk.CTk):
 
         self.server_socket = None
         self.host = "127.0.0.1"
-        self.port = 5555
+        self.port = 9000
         self.is_connected = False
         self.receive_thread = None
         self.should_receive = False
